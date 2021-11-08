@@ -56,7 +56,7 @@ while(command != "end"):
         #spanning tree
         channelgroup = input("Channel Group number: ")
         channelgroupMode = input("Channel Group Mode (auto, desirable, on, active, passive): ")
-        f.write("interface range " + intname + "-" + to + "\n channel-group " + channelgroup + " mode " + channelgroupMode + "\n";
+        f.write("interface range " + intname + "-" + to + "\n channel-group " + channelgroup + " mode " + channelgroupMode + "\n")
         command = input("")
     #....
 
