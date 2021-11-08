@@ -8,6 +8,7 @@ print("Create config file for:")
 print("1 - Switch")
 print("2 - Router")
 
+#-------------------------------------------------------------------------------------------------------
 answer = input("")
 if(answer == "1"):
     print("Switch")
@@ -20,8 +21,8 @@ password = input("Enter Enable password: ")
 
 #configure every interface (switchport, ip add, no shut)
 #ospf
-#routes
-#vlan X ex interface vlan X ip add ex
+#spanning tree
+#ip routing
 
 f = open("configuration.txt", "a")
 f.write("en\n")
@@ -32,18 +33,21 @@ f.write("enable secret " + password + "\n")
 command = input("")
 
 while(command != "end"):
-    #vlan
+    
+    #vlan-----------------------------------------------------------------------------------------------
     if (command == "vlan"):
         numb = input("Vlan number: ")
         ipadd = input("Vlan address: ")
         f.write("vlan " + numb + "\n interface vlan " + numb + "\n ip add " + ipadd + "\n ex \n")
         command = input("")
 
-    #interface
+    #interface------------------------------------------------------------------------------------------
     if (command == "interface"):
         intname = input("Interface Name: ")
         ipadd = input("Interface address: ")
-        f.write("interface " + intname + "\n ip add " + ipadd + "\n no shut\n ex \n")
+        #encapsulation dot1Q
+        switchport = input("Switchport mode: ")
+        f.write("interface " + intname + "\n ip add " + ipadd + "\n" + "switchport\n no shut\n ex \n")
         command = input("")
     #....
 
