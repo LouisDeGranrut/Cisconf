@@ -1,0 +1,38 @@
+en
+conf t
+hostname S1
+enable secret class
+
+vlan 1
+ interface vlan 1
+ ip add 192.1681.1.0 255.255.255.0
+ ex 
+
+en
+conf t
+hostname S2
+enable secret class2
+
+vlan 20
+ interface vlan 20
+ ip add 192.168.20.0 255.255.255.0
+ ex 
+ 
+interface GigabitEthernet 1/0
+ ip add 192.168.20.7 255.255.255.0
+ switchport mode access
+ no shut
+ ex 
+ 
+interface GigabitEthernet 2/0
+ ip add 192.168.20.5 255.255.255.0
+ switchport mode access
+ no shut
+ ex 
+ 
+vlan 10
+ interface vlan 10
+ ip add 192.168.10.0 255.255.255.0
+ ex 
+ 
+wr
