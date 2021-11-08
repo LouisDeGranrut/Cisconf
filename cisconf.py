@@ -59,6 +59,8 @@ while(command != "end"):
         f.write("interface range " + intname + "-" + to + "\n channel-group " + channelgroup + " mode " + channelgroupMode + "\n")
         command = input("")
     #....
+    if(command == ""):
+       command = input("")
 
 f.write("wr\n")
 f.close()
