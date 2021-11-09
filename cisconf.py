@@ -11,8 +11,12 @@ print("- Router")
 answer = input("")
 if(answer == "Switch" or answer == "switch" or answer == "s"):
     print("Switch")
-else :
+    machine = "switch"
+elif(answer == "Router" or answer == "router" or answer == "r"):
     print("Router")
+    machine = "router"
+else:
+    answer = input("")
 
 #-------------------------------------------------------------------------------------------------------------
 hostname = input("Enter machine name: ")
@@ -22,7 +26,7 @@ password = input("Enter Enable password: ")
 #ip routing
 #dhcp
 
-f = open("configuration.txt", "a")
+f = open("configuration_" + hostname + ".txt", "a")
 f.write("en\n")
 f.write("conf t\n")
 f.write("hostname " + hostname + "\n")
@@ -32,6 +36,11 @@ f.write("\n")
 command = input("")
 
 while(command != "end"):
+
+    #help-----------------------------------------------------------------------------------------------------
+    if (command == "help" or command == "h" or command == "?"):
+        print("{vlan, v}, {interface, int, i}, {interface range, ir}, {help, ?}, {end}")
+        command = input("")
     
     #vlan-----------------------------------------------------------------------------------------------------
     if (command == "vlan" or command == "v"):
@@ -55,7 +64,7 @@ while(command != "end"):
         #spanning tree
         channelgroup = input("Channel Group number: ")
         channelgroupMode = input("Channel Group Mode (auto, desirable, on, active, passive): ")
-        f.write("interface range " + intname + "-" + to + "\n channel-group " + channelgroup + " mode " + channelgroupMode + "\n")
+        f.write("interface range " + intname + "-" + to + "\n channel-group " + channelgroup + " mode " + channelgroupMode + "\n \n")
         command = input("")
     #....
     if(command == ""):
