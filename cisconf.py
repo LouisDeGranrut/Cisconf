@@ -74,4 +74,4 @@ f.write("wr\n")
 f.close()
 print("Config file created !")
 
-
+print("[+]  Added by steve")
