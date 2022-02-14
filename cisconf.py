@@ -1,77 +1,89 @@
-print("=====CISCO CONFIG EDITOR=====")
-print("Welcome to Cisconf")
-print("The Cisco configuration file creator")
-print("by Louis de Granrut")
-print("=============================")
+# coding:utf-8
+import argparse
+import sys
+import os
 
-print("Create config file for a:")
-print("- Switch")
-print("- Router")
-
-answer = input("")
-if(answer == "Switch" or answer == "switch" or answer == "s"):
-    print("Switch")
-    machine = "switch"
-elif(answer == "Router" or answer == "router" or answer == "r"):
-    print("Router")
-    machine = "router"
-else:
-    answer = input("")
-
-#-------------------------------------------------------------------------------------------------------------
-hostname = input("Enter machine name: ")
-password = input("Enter Enable password: ")
-
-#ospf
-#ip routing
-#dhcp
-
-f = open("configuration_" + hostname + ".txt", "a")
-f.write("en\n")
-f.write("conf t\n")
-f.write("hostname " + hostname + "\n")
-f.write("enable secret " + password + "\n")
-f.write("\n")
-
-command = input("")
-
-while(command != "end"):
-
-    #help-----------------------------------------------------------------------------------------------------
-    if (command == "help" or command == "h" or command == "?"):
-        print("{vlan, v}, {interface, int, i}, {interface range, ir}, {help, ?}, {end}")
-        command = input("")
+class couleurs:
+    ROUGE = '\033[91m'
+    VERT = '\033[92m'
+    ORANGE = '\033[93m'
+    BLUE = '\033[94m'
+    FIN = '\033[0m'
+    BOLD = '\033[1m'
+    HEADER = '\033[95m'
     
-    #vlan-----------------------------------------------------------------------------------------------------
-    if (command == "vlan" or command == "v"):
-        numb = input("Vlan number: ")
-        ipadd = input("Vlan address: ")
-        f.write("vlan " + numb + "\n interface vlan " + numb + "\n ip add " + ipadd + "\n ex \n \n")
+def print_banner():
+     
+    print(couleurs.VERT + """ 
+                _                                __                   _                        _   _             
+  ___(_)___  ___ ___   ___ ___  _ __  / _|       __ _ _   _| |_ ___  _ __ ___   __ _| |_(_) ___  _ __  
+ / __| / __|/ __/ _ \ / __/ _ \| '_ \| |_ _____ / _` | | | | __/ _ \| '_ ` _ \ / _` | __| |/ _ \| '_ \ 
+| (__| \__ \ (_| (_) | (_| (_) | | | |  _|_____| (_| | |_| | || (_) | | | | | | (_| | |_| | (_) | | | |
+ \___|_|___/\___\___/ \___\___/|_| |_|_|        \__,_|\__,_|\__\___/|_| |_| |_|\__,_|\__|_|\___/|_| |_|
+          
+          """ + couleurs.FIN)   
+    
+def write_result_switch(nb_vlan,names_vlan,ips_vlan,hostname, password) :  
+    print(couleurs.BLUE + "[+] Ecriture du resulat"+ couleurs.FIN)
+    try : 
+        f = open("configuration_" + hostname + ".txt", "a")
+        f.write("en\n")
+        f.write("conf t\n")
+        f.write("hostname " + hostname + "\n")
+        f.write("enable secret " + password + "\n")
+        f.write("\n")
+        for i in range(nb_vlan) :
+            f.write("vlan " + str(i) + "\n") 
+            f.write("name "+ names_vlan[i] + "\n")
+            f.write("ip address " + ips_vlan[i] + "\n")
+            f.close()
+        print(couleurs.VERT + "[+] conf saved at : configuration_" + hostname + ".txt"+ couleurs.FIN)
+    except :
+        print(couleurs.ROUGE+"[-] Erreur d\'ecriture dans le fichier !"+couleurs.FIN)
+        
+def switch():
+    try : 
+        #variable
+        ips_vlan = []
+        names_vlan = []
         command = input("")
+        #global configuration
+        hostname = input("Enter switch name: ")
+        password = input("Enter Enable password: ")
+        
+        print(couleurs.BLUE + "[*] For checking help on this module : type <help or h> "+ couleurs.FIN)
+        
+        if command == "help":
+            print(couleurs.BLUE + "[*] {vlan, v}, {interface, int, i}, {interface range, ir}, {help, ?}, {end}"+ couleurs.FIN)
+        else : 
+            print(couleurs.BLUE + "[+] ==> VLAN CONFIGURATION" + couleurs.FIN)
+            try :
+                numb = int(input("Nombres d'interfaces VLAN : "))
+                for i in range(numb):
+                    names_vlan.append(input("[*] nom de l'interface " + str(i) + " :"))
+                    ips_vlan.append(input("[*] addresse IP de l\'interface vlan " + str(i)+ " :"))
+                    print("\n")
+                write_result_switch(numb,names_vlan,ips_vlan,hostname,password)  
+            except KeyboardInterrupt :
+                print(couleurs.ORANGE +"\n[!] Interruption clavier"+ couleurs.FIN)
+            except :
+                print(couleurs.ROUGE +"[-] Ecrire un chiffre "+ couleurs.FIN)                  
+    except KeyboardInterrupt :
+        print(couleurs.ORANGE +"\n[!] Interruption clavier"+ couleurs.FIN)
 
-    #interface------------------------------------------------------------------------------------------------
-    if (command == "interface" or command == "int" or command == "i"):
-        intname = input("Interface Name: ")
-        ipadd = input("Interface address: ")
-        #encapsulation dot1Q
-        switchport = input("Switchport: ")
-        f.write("interface " + intname + "\n ip add " + ipadd + "\n" + switchport+ "\n no shut\n ex \n \n")
-        command = input("")
-    #interface range------------------------------------------------------------------------------------------
-    if (command == "interface range" or command == "ir"):
-        intname = input("Interface Name: ")
-        to = input("To: ")
-        #spanning tree
-        channelgroup = input("Channel Group number: ")
-        channelgroupMode = input("Channel Group Mode (auto, desirable, on, active, passive): ")
-        f.write("interface range " + intname + "-" + to + "\n channel-group " + channelgroup + " mode " + channelgroupMode + "\n \n")
-        command = input("")
-    #....
-    if(command == ""):
-       command = input("")
+def routeur():
+    print(couleurs.ORANGE + "\n[!] Error : This mode must be configured later, Thank for your comprehension !" + couleurs.FIN)
+    sys.exit(0)
 
-f.write("wr\n")
-f.close()
-print("Config file created !")
-
-
+if __name__ == '__main__':
+    os.system('clear')
+    print_banner()
+    parser = argparse.ArgumentParser(description="Help to generate cisco configuration\n Degranrut Louis")
+    parser.add_argument("-m", "--mode", dest="mode", help="choose switch (s) or router(r) configuration. Example : -m s")
+    args = parser.parse_args()
+    if args.mode == 's' :
+        switch()
+    elif args.mode == 'r': 
+        routeur()
+    else :
+        print(couleurs.ROUGE + "[-] No mode provided !"+ couleurs.FIN)
